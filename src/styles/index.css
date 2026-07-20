@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", Consolas, monospace;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+/* Realm portal entrance */
+@keyframes realm-enter {
+  from {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.realm-enter {
+  animation: realm-enter 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Music realm orb float */
+@keyframes orb-float {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -14px, 0); }
+}
+
+/* Music loading: the artwork liquefies until the stream can play. */
+.track-artwork {
+  transition:
+    border-radius 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.65s ease,
+    opacity 0.65s ease,
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.track-artwork-under-liquid {
+  border-radius: 46% 54% 52% 48%;
+  filter: blur(6px) saturate(1.45) brightness(0.68);
+  opacity: 0.16;
+  transform: scale(0.88);
+}
+
+@keyframes track-liquid-pool {
+  0%, 100% {
+    border-radius: 48% 52% 46% 54%;
+    transform: translateX(-50%) scale(0.78, 0.45);
+    opacity: 0.2;
+  }
+  50% {
+    border-radius: 58% 42% 55% 45%;
+    transform: translateX(-50%) scale(1.08, 0.62);
+    opacity: 0.42;
+  }
+}
+
+.track-liquid-pool {
+  bottom: -14px;
+  left: 50%;
+  width: 84px;
+  height: 24px;
+  animation: track-liquid-pool 2.55s ease-in-out infinite;
+  background-position: center 92%;
+  background-size: 112px 112px;
+  filter: blur(7px) saturate(1.4) brightness(1.15);
+  mix-blend-mode: screen;
+  will-change: border-radius, opacity, transform;
+}
+
+/* Mobile loading: no liquid shader — the cover itself breathes light while
+   the stream buffers. Opacity/transform only, so the pulse stays on the
+   compositor and costs nothing on weak GPUs. */
+@keyframes track-glow-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.94);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1.1);
+  }
+}
+
+.track-glow {
+  position: absolute;
+  inset: -18%;
+  border-radius: 32px;
+  animation: track-glow-pulse 1.5s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+
+.track-liquid-canvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 168px;
+  height: 168px;
+  z-index: 2;
+  pointer-events: none;
+  transform: translate3d(-50%, -50%, 0);
+  filter:
+    drop-shadow(0 10px 13px rgba(2, 6, 23, 0.48))
+    drop-shadow(0 0 12px rgba(125, 211, 252, 0.18));
+}
